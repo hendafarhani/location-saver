@@ -8,14 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.redis.core.GeoOperations;
 import org.springframework.data.geo.Point;
+import org.springframework.data.redis.core.GeoOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import static org.mockito.Mockito.*;
 
 
 class ProcessDriverLocationServiceImplTest {
 
+    StringRedisTemplate stringRedisTemplate;
     GeoOperations<String, String> geoOperations;
     ProcessDriverLocationServiceImpl processDriverLocationServiceMock;
 
@@ -30,8 +32,10 @@ class ProcessDriverLocationServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        stringRedisTemplate = mock(StringRedisTemplate.class);
         geoOperations = mock(GeoOperations.class);
-        processDriverLocationServiceMock = new ProcessDriverLocationServiceImpl(geoOperations);
+        when(stringRedisTemplate.opsForGeo()).thenReturn(geoOperations);
+        processDriverLocationServiceMock = new ProcessDriverLocationServiceImpl(stringRedisTemplate);
         MockitoAnnotations.openMocks(this);
     }
 
