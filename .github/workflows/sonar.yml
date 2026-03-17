@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows: ["Build Location Saver"]
     types: [completed]
+  workflow_dispatch:
 
 jobs:
   sonar:
