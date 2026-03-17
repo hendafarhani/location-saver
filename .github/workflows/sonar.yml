@@ -1,0 +1,17 @@
+name: Sonar Location Saver
+
+on:
+  workflow_run:
+    workflows: ["Build Location Saver"]
+    types: [completed]
+
+jobs:
+  sonar:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    uses: hendafarhani/github-actions-workflows/.github/workflows/sonar.yml@main
+    with:
+      java_version: "21"
+      sonar_project_key: "hendafarhani_location-saver"
+      sonar_organization: "hendafarhani"
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
