@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 public class ProcessDriverLocationServiceImpl implements ProcessDriverLocationService {
 
     private final StringRedisTemplate stringRedisTemplate;
-    public static final String vehicleLocation = "vehicle_location";
+    public static final String VEHICLE_LOCATION = "vehicle_location";
 
     @Override
     public void storeDataInRedisCache(RiderData riderData) {
         RiderDataRedis riderDataRedis = RiderMapper.mapRiderData(riderData);
 
-        stringRedisTemplate.opsForGeo().add(vehicleLocation, getPoint(riderDataRedis), riderDataRedis.getIdentifier());
+        stringRedisTemplate.opsForGeo().add(VEHICLE_LOCATION, getPoint(riderDataRedis), riderDataRedis.getIdentifier());
     }
 
     private Point getPoint(RiderDataRedis riderDataRedis){
