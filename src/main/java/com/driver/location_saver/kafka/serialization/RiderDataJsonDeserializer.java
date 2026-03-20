@@ -2,6 +2,8 @@ package com.driver.location_saver.kafka.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tracker.location_rider.model.RiderData;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
@@ -11,17 +13,14 @@ import java.util.Map;
 /**
  * Dedicated deserializer to avoid deprecated Spring Kafka JSON serde classes.
  */
+@Builder
+@RequiredArgsConstructor
 public class RiderDataJsonDeserializer implements Deserializer<RiderData> {
 
     private final ObjectMapper objectMapper;
 
     public RiderDataJsonDeserializer() {
         this(new ObjectMapper());
-    }
-
-    // Visible for testing
-    RiderDataJsonDeserializer(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
     }
 
     @Override
