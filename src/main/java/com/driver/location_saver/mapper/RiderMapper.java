@@ -7,6 +7,10 @@ import com.tracker.location_rider.model.RiderData;
 
 public class RiderMapper {
 
+    private RiderMapper(){
+        // private constructor to prevent instantiation
+    }
+
     public static RiderDataRedis mapRiderData(RiderData riderData){
 
         return RiderDataRedis.builder()
