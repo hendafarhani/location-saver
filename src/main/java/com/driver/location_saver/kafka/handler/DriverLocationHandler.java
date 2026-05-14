@@ -8,6 +8,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+// This class listens to kafka messages on the "rider.location" topic, processes the received RiderData,
+// stores it in Redis, and sends a message to a WebSocket topic for real-time updates.
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -32,5 +34,3 @@ public class DriverLocationHandler {
     }
 
 }
-// This class listens to kafka messages on the "rider.location" topic, processes the received RiderData,
-// stores it in Redis, and sends a message to a WebSocket topic for real-time updates.
