@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class DriverLocationHandlerTest {
 
@@ -31,5 +32,6 @@ class DriverLocationHandlerTest {
         RiderData riderDataTest = DriverLocationHandlerTestHelper.getRiderData();
         handler.listen(riderDataTest);
         Mockito.verify(processDriverLocationServiceMock, times(1)).storeDataInRedisCache(riderDataTest);
+        verify(simpMessagingTemplateMock).convertAndSend("/topic/driverPositions", riderDataTest.getIdentifier());
     }
 }
