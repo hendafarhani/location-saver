@@ -30,6 +30,7 @@
 		<java.version>21</java.version>
 		<maven.compiler.proc>full</maven.compiler.proc>
 		<spring-cloud.version>2025.1.1</spring-cloud.version>
+		<testcontainers.version>2.0.3</testcontainers.version>
 	</properties>
 	<dependencies>
 		<!-- WebSocket support -->
@@ -68,6 +69,16 @@
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers-kafka</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Eureka client -->
 		<dependency>
@@ -98,6 +109,13 @@
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
 				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers-bom</artifactId>
+				<version>${testcontainers.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
