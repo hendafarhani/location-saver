@@ -1,4 +1,4 @@
-package com.driver.location_saver.service.impl;
+package com.driver.location_saver.service.serviceimpl;
 
 import com.driver.location_saver.mapper.RiderMapper;
 import com.driver.location_saver.redis.model.RiderDataRedis;
@@ -14,16 +14,22 @@ import org.springframework.stereotype.Service;
 public class ProcessDriverLocationServiceImpl implements ProcessDriverLocationService {
 
     private final StringRedisTemplate stringRedisTemplate;
-    public static final String VEHICLE_LOCATION = "vehicle_location";
 
     @Override
     public void storeDataInRedisCache(RiderData riderData) {
         RiderDataRedis riderDataRedis = RiderMapper.mapRiderData(riderData);
-
-        stringRedisTemplate.opsForGeo().add(VEHICLE_LOCATION, getPoint(riderDataRedis), riderDataRedis.getIdentifier());
+        storeRiderLocation(riderDataRedis);
     }
 
-    private Point getPoint(RiderDataRedis riderDataRedis){
+    private void storeRiderLocation(RiderDataRedis riderDataRedis) {
+        stringRedisTemplate.opsForGeo().add(VEHICLE_LOCATION, toPoint(riderDataRedis), riderIdentifier(riderDataRedis));
+    }
+
+    private Point toPoint(RiderDataRedis riderDataRedis){
         return new Point(riderDataRedis.getLongitude(), riderDataRedis.getLatitude());
+    }
+
+    private String riderIdentifier(RiderDataRedis riderDataRedis) {
+        return riderDataRedis.getIdentifier();
     }
 }

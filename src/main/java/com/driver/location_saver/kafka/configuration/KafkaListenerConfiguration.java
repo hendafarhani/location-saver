@@ -28,7 +28,8 @@ public class KafkaListenerConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, RiderData> riderConsumerFactory(@Value("${kafka.bootstrap-servers}") String bootstrapServers){
+    public ConsumerFactory<String, RiderData> riderConsumerFactory(
+            @Value("${kafka.bootstrap-servers}") String bootstrapServers){
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);

@@ -1,6 +1,7 @@
-package com.driver.location_saver.service.impl;
+package com.driver.location_saver.service.serviceimpl;
 
 import com.driver.location_saver.kafka.handler.helper.DriverLocationHandlerTestHelper;
+import com.driver.location_saver.service.ProcessDriverLocationService;
 import com.tracker.location_rider.model.RiderData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class ProcessDriverLocationServiceImplTest {
 
         processDriverLocationServiceMock.storeDataInRedisCache(riderDataTest);
 
-        Assertions.assertEquals("vehicle_location", keyArgumentCaptor.getValue());
+        Assertions.assertEquals(ProcessDriverLocationService.VEHICLE_LOCATION, keyArgumentCaptor.getValue());
         Assertions.assertEquals(riderDataTest.getLocation().getLongitude(), pointArgumentCaptor.getValue().getX());
         Assertions.assertEquals(riderDataTest.getLocation().getLatitude(), pointArgumentCaptor.getValue().getY());
         Assertions.assertEquals(riderDataTest.getIdentifier(), memberArgumentCaptor.getValue());

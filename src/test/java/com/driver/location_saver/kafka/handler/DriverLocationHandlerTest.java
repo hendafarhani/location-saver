@@ -1,7 +1,7 @@
 package com.driver.location_saver.kafka.handler;
 
 import com.driver.location_saver.kafka.handler.helper.DriverLocationHandlerTestHelper;
-import com.driver.location_saver.service.impl.ProcessDriverLocationServiceImpl;
+import com.driver.location_saver.service.ProcessDriverLocationService;
 import com.tracker.location_rider.model.RiderData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,14 +15,14 @@ import static org.mockito.Mockito.verify;
 class DriverLocationHandlerTest {
 
 
-    ProcessDriverLocationServiceImpl processDriverLocationServiceMock;
+    ProcessDriverLocationService processDriverLocationServiceMock;
     SimpMessagingTemplate simpMessagingTemplateMock;
 
     DriverLocationHandler handler;
 
     @BeforeEach
     void setUp() {
-        processDriverLocationServiceMock = mock(ProcessDriverLocationServiceImpl.class);
+        processDriverLocationServiceMock = mock(ProcessDriverLocationService.class);
         simpMessagingTemplateMock = mock(SimpMessagingTemplate.class);
         handler = new DriverLocationHandler(processDriverLocationServiceMock, simpMessagingTemplateMock);
     }
@@ -30,8 +30,8 @@ class DriverLocationHandlerTest {
     @Test
     void listen_Success() { 
         RiderData riderDataTest = DriverLocationHandlerTestHelper.getRiderData();
-        handler.listen(riderDataTest);
+        handler.listen(riderDataTest.getIdentifier(), riderDataTest);
         Mockito.verify(processDriverLocationServiceMock, times(1)).storeDataInRedisCache(riderDataTest);
-        verify(simpMessagingTemplateMock).convertAndSend("/topic/driverPositions", riderDataTest.getIdentifier());
+        verify(simpMessagingTemplateMock).convertAndSend(DriverLocationHandler.DRIVER_POSITIONS_DESTINATION, riderDataTest.getIdentifier());
     }
 }

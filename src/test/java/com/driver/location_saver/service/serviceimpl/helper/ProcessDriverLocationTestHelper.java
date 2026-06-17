@@ -1,4 +1,4 @@
-package com.driver.location_saver.service.impl.helper;
+package com.driver.location_saver.service.serviceimpl.helper;
 
 import com.tracker.location_rider.model.RiderData;
 import com.tracker.location_rider.model.Location;
