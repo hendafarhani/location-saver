@@ -1,6 +1,6 @@
 package com.driver.location_saver.integration;
 
-import com.driver.location_saver.service.impl.ProcessDriverLocationServiceImpl;
+import com.driver.location_saver.service.ProcessDriverLocationService;
 import com.tracker.location_rider.model.Location;
 import com.tracker.location_rider.model.RiderData;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ class ProcessDriverLocationRedisIntegrationTest {
             .withExposedPorts(6379);
 
     @Autowired
-    private ProcessDriverLocationServiceImpl service;
+    private ProcessDriverLocationService service;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -47,7 +47,7 @@ class ProcessDriverLocationRedisIntegrationTest {
 
     @BeforeEach
     void cleanRedis() {
-        stringRedisTemplate.delete(ProcessDriverLocationServiceImpl.VEHICLE_LOCATION);
+        stringRedisTemplate.delete(ProcessDriverLocationService.VEHICLE_LOCATION);
     }
 
     @Test
@@ -65,7 +65,7 @@ class ProcessDriverLocationRedisIntegrationTest {
         service.storeDataInRedisCache(riderData);
 
         List<Point> positions = stringRedisTemplate.opsForGeo()
-                .position(ProcessDriverLocationServiceImpl.VEHICLE_LOCATION, "rider-redis-1");
+                .position(ProcessDriverLocationService.VEHICLE_LOCATION, "rider-redis-1");
 
         assertThat(positions).hasSize(1);
         assertThat(positions.getFirst().getX()).isCloseTo(2.3522, offset(0.0001));

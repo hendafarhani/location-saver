@@ -10,9 +10,6 @@ import org.apache.kafka.common.serialization.Deserializer;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * Dedicated deserializer to avoid deprecated Spring Kafka JSON serde classes.
- */
 @Builder
 @RequiredArgsConstructor
 public class RiderDataJsonDeserializer implements Deserializer<RiderData> {

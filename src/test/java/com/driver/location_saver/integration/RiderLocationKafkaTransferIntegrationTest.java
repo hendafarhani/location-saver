@@ -1,6 +1,6 @@
 package com.driver.location_saver.integration;
 
-import com.driver.location_saver.service.impl.ProcessDriverLocationServiceImpl;
+import com.driver.location_saver.service.ProcessDriverLocationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tracker.location_rider.model.Location;
 import com.tracker.location_rider.model.RiderData;
@@ -43,7 +43,6 @@ import static org.awaitility.Awaitility.await;
 @Testcontainers(disabledWithoutDocker = true)
 class RiderLocationKafkaTransferIntegrationTest {
 
-    private static final String TOPIC = "rider.location";
     private static final String RIDER_IDENTIFIER = "rider-transfer-1";
 
     @Container
@@ -62,6 +61,9 @@ class RiderLocationKafkaTransferIntegrationTest {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Value("${kafka.topics.rider-location}")
+    private String riderLocationTopic;
+
     @DynamicPropertySource
     static void registerContainerProperties(DynamicPropertyRegistry registry) {
         registry.add("kafka.bootstrap-servers", kafka::getBootstrapServers);
@@ -71,7 +73,7 @@ class RiderLocationKafkaTransferIntegrationTest {
 
     @BeforeEach
     void cleanRedis() {
-        stringRedisTemplate.delete(ProcessDriverLocationServiceImpl.VEHICLE_LOCATION);
+        stringRedisTemplate.delete(ProcessDriverLocationService.VEHICLE_LOCATION);
     }
 
     @Test
@@ -86,16 +88,18 @@ class RiderLocationKafkaTransferIntegrationTest {
                         .build())
                 .build();
 
-        kafkaTemplate.send(TOPIC, RIDER_IDENTIFIER, objectMapper.writeValueAsBytes(payload))
+        kafkaTemplate.send(riderLocationTopic, RIDER_IDENTIFIER, objectMapper.writeValueAsBytes(payload))
                 .get(10, TimeUnit.SECONDS);
 
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
             List<Point> positions = stringRedisTemplate.opsForGeo()
-                    .position(ProcessDriverLocationServiceImpl.VEHICLE_LOCATION, RIDER_IDENTIFIER);
+                    .position(ProcessDriverLocationService.VEHICLE_LOCATION, RIDER_IDENTIFIER);
 
             assertThat(positions).hasSize(1);
-            assertThat(positions.getFirst().getX()).isCloseTo(2.2945, withinGeoPrecision());
-            assertThat(positions.getFirst().getY()).isCloseTo(48.8584, withinGeoPrecision());
+            Point storedPosition = positions.getFirst();
+            assertThat(storedPosition).isNotNull();
+            assertThat(storedPosition.getX()).isCloseTo(2.2945, withinGeoPrecision());
+            assertThat(storedPosition.getY()).isCloseTo(48.8584, withinGeoPrecision());
         });
     }
 
