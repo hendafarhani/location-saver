@@ -16,10 +16,6 @@ public class RiderData implements Serializable {
     private String userName;
     private Location location;
 
-    public void moveRandomly(double latChange, double lonChange) {
-        this.location.setLatitude(this.location.getLatitude() + latChange);
-        this.location.setLongitude(this.location.getLongitude() + lonChange);
-    }
 }
 
 
