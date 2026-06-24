@@ -16,9 +16,12 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.MessageListenerContainer;
+import org.springframework.kafka.test.utils.ContainerTestUtils;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
@@ -61,8 +64,14 @@ class RiderLocationKafkaTransferIntegrationTest {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
+
     @Value("${kafka.topics.rider-location}")
     private String riderLocationTopic;
+
+    @Value("${kafka.listeners.rider-location.id}")
+    private String riderLocationListenerId;
 
     @DynamicPropertySource
     static void registerContainerProperties(DynamicPropertyRegistry registry) {
@@ -74,6 +83,17 @@ class RiderLocationKafkaTransferIntegrationTest {
     @BeforeEach
     void cleanRedis() {
         stringRedisTemplate.delete(ProcessDriverLocationService.VEHICLE_LOCATION);
+    }
+
+    @BeforeEach
+    void waitForListenerAssignment() {
+        // Avoid the auto.offset.reset=latest race: ensure the consumer has been
+        // assigned its partition before any record is produced, otherwise the
+        // record can be written before assignment and skipped past.
+        MessageListenerContainer container =
+                kafkaListenerEndpointRegistry.getListenerContainer(riderLocationListenerId);
+        assert container != null;
+        ContainerTestUtils.waitForAssignment(container, 1);
     }
 
     @Test

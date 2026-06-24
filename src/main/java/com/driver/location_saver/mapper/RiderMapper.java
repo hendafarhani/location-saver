@@ -15,6 +15,8 @@ public class RiderMapper {
 
         return RiderDataRedis.builder()
                 .identifier(riderData.getIdentifier())
+                .driverIdentifier(riderData.getDriverIdentifier())
+                .driverDisplayId(riderData.getDriverDisplayId())
                 .longitude(riderData.getLocation().getLongitude())
                 .latitude(riderData.getLocation().getLatitude())
                 .build();

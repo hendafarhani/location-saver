@@ -7,6 +7,8 @@ import lombok.Data;
 @Builder
 public class RiderDataRedis {
     private String identifier;
+    private String driverIdentifier;
+    private String driverDisplayId;
     private double latitude;
     private double longitude;
 }

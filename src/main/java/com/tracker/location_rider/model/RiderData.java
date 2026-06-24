@@ -13,9 +13,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class RiderData implements Serializable {
     private String identifier;
+    private String driverIdentifier;
+    private String driverDisplayId;
     private String userName;
     private Location location;
 
 }
-
 
