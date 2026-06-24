@@ -80,12 +80,17 @@ class RiderLocationKafkaTransferIntegrationTest {
         registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
     }
 
-    @BeforeEach
+
     void cleanRedis() {
         stringRedisTemplate.delete(ProcessDriverLocationService.VEHICLE_LOCATION);
     }
 
     @BeforeEach
+    void init(){
+        cleanRedis();
+        waitForListenerAssignment();
+    }
+
     void waitForListenerAssignment() {
         // Avoid the auto.offset.reset=latest race: ensure the consumer has been
         // assigned its partition before any record is produced, otherwise the
