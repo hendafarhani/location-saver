@@ -30,9 +30,13 @@ public class ProcessDriverLocationServiceImpl implements ProcessDriverLocationSe
     }
 
     private String riderIdentifier(RiderDataRedis riderDataRedis) {
-        if (riderDataRedis.getDriverIdentifier() != null && !riderDataRedis.getDriverIdentifier().isBlank()) {
+        if (hasDriverIdentifier(riderDataRedis)) {
             return riderDataRedis.getDriverIdentifier();
         }
         return riderDataRedis.getIdentifier();
+    }
+
+    private boolean hasDriverIdentifier(RiderDataRedis riderDataRedis) {
+        return riderDataRedis.getDriverIdentifier() != null && !riderDataRedis.getDriverIdentifier().isBlank();
     }
 }

@@ -92,6 +92,7 @@ class RiderLocationKafkaTransferIntegrationTest {
         // record can be written before assignment and skipped past.
         MessageListenerContainer container =
                 kafkaListenerEndpointRegistry.getListenerContainer(riderLocationListenerId);
+        assert container != null;
         ContainerTestUtils.waitForAssignment(container, 1);
     }
 
