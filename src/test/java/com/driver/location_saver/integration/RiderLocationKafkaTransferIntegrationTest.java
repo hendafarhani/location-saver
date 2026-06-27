@@ -81,24 +81,10 @@ class RiderLocationKafkaTransferIntegrationTest {
     }
 
 
-    void cleanRedis() {
-        stringRedisTemplate.delete(ProcessDriverLocationService.VEHICLE_LOCATION);
-    }
-
     @BeforeEach
     void init(){
         cleanRedis();
         waitForListenerAssignment();
-    }
-
-    void waitForListenerAssignment() {
-        // Avoid the auto.offset.reset=latest race: ensure the consumer has been
-        // assigned its partition before any record is produced, otherwise the
-        // record can be written before assignment and skipped past.
-        MessageListenerContainer container =
-                kafkaListenerEndpointRegistry.getListenerContainer(riderLocationListenerId);
-        assert container != null;
-        ContainerTestUtils.waitForAssignment(container, 1);
     }
 
     @Test
@@ -126,6 +112,20 @@ class RiderLocationKafkaTransferIntegrationTest {
             assertThat(storedPosition.getX()).isCloseTo(2.2945, withinGeoPrecision());
             assertThat(storedPosition.getY()).isCloseTo(48.8584, withinGeoPrecision());
         });
+    }
+
+    private void waitForListenerAssignment() {
+        // Avoid the auto.offset.reset=latest race: ensure the consumer has been
+        // assigned its partition before any record is produced, otherwise the
+        // record can be written before assignment and skipped past.
+        MessageListenerContainer container =
+                kafkaListenerEndpointRegistry.getListenerContainer(riderLocationListenerId);
+        assert container != null;
+        ContainerTestUtils.waitForAssignment(container, 1);
+    }
+
+    private void cleanRedis() {
+        stringRedisTemplate.delete(ProcessDriverLocationService.VEHICLE_LOCATION);
     }
 
     private org.assertj.core.data.Offset<Double> withinGeoPrecision() {
