@@ -27,7 +27,7 @@ import static org.assertj.core.data.Offset.offset;
         "eureka.client.enabled=false"
 })
 @Testcontainers(disabledWithoutDocker = true)
-class ProcessDriverLocationRedisIntegrationTest {
+class ProcessDriverLocationRedisIT {
 
     @Container
     static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:7-alpine"))

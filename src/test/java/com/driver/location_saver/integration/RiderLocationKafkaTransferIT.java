@@ -44,7 +44,7 @@ import static org.awaitility.Awaitility.await;
         "eureka.client.enabled=false"
 })
 @Testcontainers(disabledWithoutDocker = true)
-class RiderLocationKafkaTransferIntegrationTest {
+class RiderLocationKafkaTransferIT {
 
     private static final String RIDER_IDENTIFIER = "rider-transfer-1";
 
