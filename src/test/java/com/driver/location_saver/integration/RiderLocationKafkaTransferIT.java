@@ -44,7 +44,7 @@ import static org.awaitility.Awaitility.await;
         "eureka.client.enabled=false"
 })
 @Testcontainers(disabledWithoutDocker = true)
-class RiderLocationKafkaTransferIntegrationTest {
+class RiderLocationKafkaTransferIT {
 
     private static final String RIDER_IDENTIFIER = "rider-transfer-1";
 
@@ -80,20 +80,11 @@ class RiderLocationKafkaTransferIntegrationTest {
         registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
     }
 
-    @BeforeEach
-    void cleanRedis() {
-        stringRedisTemplate.delete(ProcessDriverLocationService.VEHICLE_LOCATION);
-    }
 
     @BeforeEach
-    void waitForListenerAssignment() {
-        // Avoid the auto.offset.reset=latest race: ensure the consumer has been
-        // assigned its partition before any record is produced, otherwise the
-        // record can be written before assignment and skipped past.
-        MessageListenerContainer container =
-                kafkaListenerEndpointRegistry.getListenerContainer(riderLocationListenerId);
-        assert container != null;
-        ContainerTestUtils.waitForAssignment(container, 1);
+    void init(){
+        cleanRedis();
+        waitForListenerAssignment();
     }
 
     @Test
@@ -121,6 +112,20 @@ class RiderLocationKafkaTransferIntegrationTest {
             assertThat(storedPosition.getX()).isCloseTo(2.2945, withinGeoPrecision());
             assertThat(storedPosition.getY()).isCloseTo(48.8584, withinGeoPrecision());
         });
+    }
+
+    private void waitForListenerAssignment() {
+        // Avoid the auto.offset.reset=latest race: ensure the consumer has been
+        // assigned its partition before any record is produced, otherwise the
+        // record can be written before assignment and skipped past.
+        MessageListenerContainer container =
+                kafkaListenerEndpointRegistry.getListenerContainer(riderLocationListenerId);
+        assert container != null;
+        ContainerTestUtils.waitForAssignment(container, 1);
+    }
+
+    private void cleanRedis() {
+        stringRedisTemplate.delete(ProcessDriverLocationService.VEHICLE_LOCATION);
     }
 
     private org.assertj.core.data.Offset<Double> withinGeoPrecision() {
