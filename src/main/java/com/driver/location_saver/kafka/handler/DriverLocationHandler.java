@@ -23,7 +23,7 @@ public class DriverLocationHandler {
 
     @KafkaListener(
             id = "${kafka.listeners.rider-location.id}",
-            topics = "${kafka.topics.rider-location}",
+            topics = "${microgo.topics.rider-location}",
             groupId = "${kafka.consumers.rider-location.group-id}",
             containerFactory = "riderLocationListenerFactory"
     )

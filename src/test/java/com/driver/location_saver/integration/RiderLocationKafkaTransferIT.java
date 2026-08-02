@@ -67,7 +67,7 @@ class RiderLocationKafkaTransferIT {
     @Autowired
     private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
-    @Value("${kafka.topics.rider-location}")
+    @Value("${microgo.topics.rider-location}")
     private String riderLocationTopic;
 
     @Value("${kafka.listeners.rider-location.id}")
